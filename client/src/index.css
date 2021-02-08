@@ -1,0 +1,42 @@
+.wrapper {
+    margin: 100px auto 0 auto;
+    width: 80%;
+}
+
+.todo__add {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+.add__input {
+    min-width: 88%;
+}
+
+.add__button {
+    min-width: 10%;
+}
+
+.list__item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0; 
+    padding: 5px;
+    font-size: 18px;
+    border: 1px solid black;
+}
+
+.input__change {
+    min-width: 70%;
+}
+
+.btn__change, .btn__save{
+    margin-left: auto;
+    margin-right: 10px;
+    width: 110px;
+}
+
