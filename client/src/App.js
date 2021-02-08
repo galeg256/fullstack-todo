@@ -3,6 +3,8 @@ import React from 'react'
 
 //App
 export default class App extends React.Component {
+  
+
   render() {
     return <div className='wrapper'>
       <ToDo />
@@ -17,15 +19,21 @@ class ToDo extends React.Component {
     super()
     this.state = {
       todos: [
-        {id: '1', text: 'Купить хлеб'},
-        {id: '2', text: 'Купить молоко'},
-        {id: '3', text: 'Купить кофе'}
+        // {id: '1', text: 'Купить хлеб'},
+        // {id: '2', text: 'Купить молоко'},
+        // {id: '3', text: 'Купить кофе'}
       ]
     }
 
     this.addTodo = this.addTodo.bind(this)
     this.delTodo = this.delTodo.bind(this)
     this.saveToDo = this.saveToDo.bind(this)
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:5000/api')
+      .then(response => response.json())
+      .then(result => {this.setState({todos: result} ) })
   }
 
   createID() { //генератор id для list-item

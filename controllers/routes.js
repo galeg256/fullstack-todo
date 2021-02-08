@@ -1,7 +1,7 @@
 import {db} from '../app.js'
 
 export const getAll = (req,res) => {
-    const sqlSelect = "Select * from todo_list"
+    const sqlSelect = "Select id, name as text from todo_list"
     db.query(sqlSelect,(err, result) => {
         if (err) res.send(err)
         else res.status(200).send(result)
