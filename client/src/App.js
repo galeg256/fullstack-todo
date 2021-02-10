@@ -1,3 +1,4 @@
+
 import React from 'react'
 
 
@@ -31,10 +32,27 @@ class ToDo extends React.Component {
   }
 
   componentDidMount() {
+    console.log("mount")
     fetch('http://localhost:5000/api')
       .then(response => response.json())
-      .then(result => {this.setState({todos: result} ) })
+      //.then(result => {this.setState({todos: result} ) })
+      .then(result => {this.setState(state => {
+        for(let item of result) {
+          item.id = item.id.toString()
+        }
+        return {todos: result}
+      } ) })
+      
   }
+  // componentDidUpdate(prevProps, prevState) {
+  //   // if (prevState)
+  //   // console.log(prevState)
+  //   if (prevState.todos.length && (this.state.todos.length < prevState.todos.length)) {
+  //     //console.log(prevState)
+
+  //     console.log("delete")
+  //   }
+  // }
 
   createID() { //генератор id для list-item
     while(true) {
@@ -49,41 +67,64 @@ class ToDo extends React.Component {
     // this.state.todos.unshift({id: '1', text: newTodoText})
     // console.log(this.state.todos)
     // this.setState({todos: this.state.todos})
-
-    this.setState( state => {
-      const cloneTodos = Object.assign([], state.todos) //клонирование массива
-      //Не может аншифтнуть в пустой массив
-      if (cloneTodos.length != 0) cloneTodos.unshift({id: this.createID(), text: newTodoText})
-      else cloneTodos.unshift({id: '1', text: newTodoText})
-      // cloneTodos.splice(0, 0, {id: this.createID(), text: newTodoText} )
-      // else cloneTodos.push({id: this.createID(), text: newTodoText})
-      return {todos: cloneTodos}
+    console.log({"name": newTodoText})
+    
+    fetch('http://localhost:5000/api/', {
+      method: "post",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({"name": newTodoText})
+    })
+    .then(res => res.json())
+    .then(result => {
+      this.setState(state => {
+        const cloneTodos = Object.assign([], state.todos) //клонирование массива
+        if (cloneTodos.length != 0) cloneTodos.unshift({id: result[0].id.toString(), text: newTodoText})
+        else cloneTodos.unshift({id: result[0].id.toString(), text: newTodoText})
+        return {todos: cloneTodos}
+      })
     })
   }
 
   delTodo(delID) {
-    this.setState( state => {
-      const pos = state.todos.findIndex( value => value.id === delID)
-      const cloneTodos = Object.assign([], state.todos)
-      cloneTodos.splice(pos, 1)
-      return {todos: cloneTodos}
+    fetch(`http://localhost:5000/api/delete/${delID}`, {
+      method: "delete"
+    })
+    //.then(response => response.json())
+    .then(result => {
+      console.log(result)
+      if (result.status==200) {
+        this.setState( state => {
+        const pos = state.todos.findIndex( value => value.id === delID)
+        const cloneTodos = Object.assign([], state.todos)
+        cloneTodos.splice(pos, 1)
+        return {todos: cloneTodos}
+        })
+      } else console.log("error delete")
     })
   }
 
   saveToDo(todo) {
-    let pos
-    for (let i=0; i<this.state.todos.length; i++) {
-      if (this.state.todos[i].id === todo.id) pos = i
-    }
-
-    this.setState( state => {
-      const cloneTodos = Object.assign([], state.todos)
-      console.log(cloneTodos)
-      cloneTodos.splice(pos, 1, {id: todo.id, text: todo.textValue})
-      console.log(cloneTodos)
-      return {todos: cloneTodos}
+    console.log(todo)
+    fetch('http://localhost:5000/api/update', {
+      method: "put",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(todo)
     })
+    //.then(res => res.json())
+    .then(result => {    
+      if (result.status == 200) {
+        let pos
+        for (let i=0; i<this.state.todos.length; i++) {
+          if (this.state.todos[i].id === todo.id) pos = i
+        }
 
+        this.setState( state => {
+          const cloneTodos = Object.assign([], state.todos)
+          cloneTodos.splice(pos, 1, {id: todo.id, text: todo.textValue})
+          return {todos: cloneTodos}
+        })
+      }
+    })
   }
 
   render() {
@@ -115,9 +156,7 @@ class AddToDo extends React.Component {
 
   handleAdd(evt) {
     evt.preventDefault()
-    console.log('before call parent method')
     this.props.addTodo(this.state.addText)
-    console.log('after call parent method')
     this.setState({addText: ''}) 
   }
 
