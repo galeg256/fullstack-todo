@@ -2,7 +2,9 @@ import express from 'express'
 import mysql from 'mysql'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import router from './routes/routes.js'
+import todoRoute from './routes/todo.route.js'
+import authRoute from './routes/auth.route.js'
+
 
 const app = express() 
 
@@ -17,7 +19,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json())
 app.use(cors())
 
-app.use('/api',router)
+app.use('/api', todoRoute)
+app.use('/api/auth', authRoute)
 
 db.connect(function(err){
     if (err) {
