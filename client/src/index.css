@@ -1,4 +1,13 @@
 .wrapper {
+    /* height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center; */
+}
+
+/* ToDo styles start */
+.todo {
     margin: 100px auto 0 auto;
     width: 80%;
 }
@@ -40,3 +49,176 @@
     width: 110px;
 }
 
+/* ToDo styles end */
+
+/* AuthFrom styles start */
+
+.auth-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+    
+    font-size: 16px;
+}
+
+.auth-form__wrap {
+    width: 315px;
+    /* height: 400px; */
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.auth-form__title {
+    /* background-color: red; */
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.auth-form .form__login {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+}
+
+.auth-form .login__input {
+    width: 250px;
+}
+
+.auth-form .form__password {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+}
+
+.auth-form .password__input {
+    width: 250px;
+}
+
+.auth-form .error {
+    padding-left: 62px;
+    height: 20px;
+    font-size: 15px;
+    color: red;
+}
+
+.auth-form .auth-form__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.auth-form .btn-reg {
+    border: 0;
+    background: 0;
+    padding: 0;
+    font-size: 14px;
+    color: blue;
+    text-decoration: underline;
+}
+
+.auth-form .btn-reg:hover, .auth-form .btn-reg:focus {
+    opacity: .7;
+}
+
+.auth-form .btn-enter {
+    width: 80px;
+} 
+
+/* AuthFrom styles end */
+
+/* RegisterFrom styles start */
+
+.reg-form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    width: 100vw;
+    height: 100vh;
+    
+    font-size: 16px;
+}
+
+.reg-form__wrap {
+    width: 400px;
+    /* height: 400px; */
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.reg-form__title {
+    /* background-color: red; */
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.reg-form .form__login {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+}
+
+.reg-form .login__input {
+    width: 250px;
+}
+
+.reg-form .form__password {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+}
+
+.reg-form .password__input {
+    width: 250px;
+}
+
+.reg-form .error {
+    padding-left: 147px;
+    height: 20px;
+    font-size: 15px;
+    color: red;
+}
+
+.reg-form .reg-form__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reg-form .btn-enter {
+    border: 0;
+    background: 0;
+    padding: 0;
+    font-size: 14px;
+    color: blue;
+    text-decoration: underline;
+}
+
+.reg-form .btn-enter:hover, .reg-form .btn-enter:focus {
+    opacity: .7;
+}
+
+.reg-form .btn-reg {
+    width: 170px;
+} 
+
+/* RegisterFrom styles end */
