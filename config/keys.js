@@ -1,3 +1,3 @@
 export const config = {
-    jwt: 'dev'
+    jwt: 'fullstack-todo'
 }
