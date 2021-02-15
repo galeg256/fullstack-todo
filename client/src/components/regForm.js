@@ -21,11 +21,17 @@ export default class RegisterForm extends React.Component {
   }
 
   handleLogInput(evt) {
-    this.setState({logValue: evt.target.value})
+    this.setState({
+      logErrMes: '',
+      logValue: evt.target.value
+    })
   }
 
   handlePasInput(evt) {
-    this.setState({pasValue: evt.target.value})
+    this.setState({
+      pasErrMes: '',
+      pasValue: evt.target.value
+    })
   }
 
   handleRepPasInput(evt) {
@@ -39,11 +45,67 @@ export default class RegisterForm extends React.Component {
     this.props.changeForm('AuthForm')
   }
 
+  async fetchRegistration() {
+    const state = this.state
+    const res = await fetch('http://localhost:5000/api/auth/register', {
+      method: "post",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({"login": state.logValue, "password": state.pasValue})
+    })
+    const result = await res.json()
+    if (res.ok) {
+      alert("Успешная регистрация!")
+      //сохраняем токен в сессию
+      //открываем todo
+      this.props.changeForm('ToDo')
+    } else {
+      if (res.status === 400)
+        alert(result.msg)
+      else {   
+        let errLogin = ''
+        let errPass = ''
+        for (let err of result.errors) {
+          if (err.param === 'login') errLogin=err.msg
+          if (err.param === 'password') errPass=err.msg
+        }
+        this.setState({
+          logErrMes: errLogin,
+          pasErrMes: errPass
+        })
+        // console.log(result)
+      }
+    }
+   
+  }
+
   handleRegistration() {
     const state = this.state 
-    if (state.pasValue !== state.repPasValue) {
+    if (state.pasValue === state.repPasValue) {
+      this.fetchRegistration()
+    } else {
       this.setState({repPasErrMes: 'Пароли не совпадают'})
     }
+
+    // if (state.pasValue === state.repPasValue) {
+    //   fetch('http://localhost:5000/api/auth/register', {
+    //     method: "post",
+    //     headers: {'Content-Type':'application/json'},
+    //     body: JSON.stringify({"login": state.logValue, "password": state.pasValue})
+    //   })
+    //   .then(res => {
+    //     if (res.status !== 200) {
+    //       alert("Error")
+    //       return
+    //     }
+    //     //else 
+    //     res.json()
+    //   })
+    //   .then(result => {
+    //     console.log("Зашел во второй then")
+    //   })
+    // } else {
+    //   this.setState({repPasErrMes: 'Пароли не совпадают'})
+    // }
   }
 
   render() {

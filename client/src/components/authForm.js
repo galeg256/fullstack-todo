@@ -14,6 +14,7 @@ export default class AuthForm extends React.Component {
     this.handleLogInput = this.handleLogInput.bind(this)
     this.handlePasInput = this.handlePasInput.bind(this)
     this.handleChangeForm = this.handleChangeForm.bind(this)
+    this.handleAuth = this.handleAuth.bind(this)
   }
 
   handleLogInput(evt) {
@@ -26,6 +27,42 @@ export default class AuthForm extends React.Component {
 
   handleChangeForm() {
     this.props.changeForm('RegisterForm')
+  }
+
+  async fetchAuth() {
+    const state = this.state
+    const res = await fetch('http://localhost:5000/api/auth/login', {
+      method: "post",
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({"login": state.logValue, "password": state.pasValue})
+    })
+    const result = await res.json()
+    if (res.ok) {
+      alert("Успешный вход!")
+      //сохраняем токен в сессию
+      //открываем todo
+      this.props.changeForm('ToDo')
+    } else {
+      if (res.status === 404)
+        alert(result.msg)
+      else {   
+        let errLogin = ''
+        let errPass = ''
+        for (let err of result.errors) {
+          if (err.param === 'login') errLogin=err.msg
+          if (err.param === 'password') errPass=err.msg
+        }
+        this.setState({
+          logErrMes: errLogin,
+          pasErrMes: errPass
+        })
+        // console.log(result)
+      }
+    }
+  }
+
+  handleAuth() {
+    this.fetchAuth()
   }
 
   render() {
@@ -53,7 +90,7 @@ export default class AuthForm extends React.Component {
           </form>
           <div className='auth-form__buttons'>
             <button className='btn-reg' onClick={this.handleChangeForm}>Зарегистрироваться</button>
-            <button className='btn-enter'>Войти</button>
+            <button className='btn-enter' onClick={this.handleAuth}>Войти</button>
           </div>
         </div>
       </div>

@@ -6,11 +6,11 @@ const router = Router()
 
 router.get("/", users)
 router.post("/login", [
-    check('login','Некорректный email').isEmail(),
-    check('password', "Минимальная длина пароля 6 символов").exists()
+    check('login','Некорректный e-mail').isEmail(),
+    check('password', "Введите пароль").exists()
 ], login)
 router.post("/register", [
-    check('login','Некорректный email').isEmail(),
+    check('login','Некорректный e-mail').isEmail(),
     check('password', "Минимальная длина пароля 6 символов").isLength({min: 6})
 ], register)
 
