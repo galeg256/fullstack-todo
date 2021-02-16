@@ -1,8 +1,15 @@
 import {db} from '../app.js'
+import jwt_decode from 'jwt-decode'
+
+function getUserId(req) {
+    const token = req.headers.authorization //токен из параметров запроса
+    return jwt_decode(token).userId //ид пользователя из токена
+}
 
 export const getAll = (req,res) => {
-    const sqlSelect = "Select id, name as text from todo_list order by id desc"
-    db.query(sqlSelect,(err, result) => {
+    const userId = getUserId(req)
+    const sqlSelect = "Select id, name as text from todo.todo_list where userId=? order by id desc"
+    db.query(sqlSelect, userId, (err, result) => {
         if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
         else res.status(200).send(result)
     })
@@ -10,24 +17,26 @@ export const getAll = (req,res) => {
 
 export const createToDo = async (req, res) => {
     const name = req.body.name
-    
-    const sqlInsert = "INSERT INTO todo.todo_list (name, userId) VALUES (?,1);"
-    db.query(sqlInsert, name, (err, result) => {
+    const userId = getUserId(req)
+    const sqlInsert = "INSERT INTO todo.todo_list (name, userId) VALUES (?,?);"
+    db.query(sqlInsert, [name, userId], (err, result) => {
         if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
-        else {
-            const sqlSelect = "Select max(id) as id from todo.todo_list;"
-            db.query(sqlSelect, (err, result) => {
-                if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
-                else res.status(200).send(result)
-               // else res.status(200).send("success")
-            })
-        }
-    })
+        else {           
+            res.status(200).send(result.insertId.toString())
+
+            // const sqlSelect = "Select max(id) as id from todo.todo_list;"
+            // db.query(sqlSelect, (err, result) => {
+            //     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
+            //     else res.status(200).send(result)
+            //    // else res.status(200).send("success")
+            // })
+       } 
+   }) 
 }
 
 export const deleteToDo = (req, res) => {
     const id = req.params.id
-    const sqlDelete = "DELETE FROM todo_list WHERE id=?"
+    const sqlDelete = "DELETE FROM todo.todo_list WHERE id=?"
     db.query(sqlDelete, id,(err, result) => {
         if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
         else res.status(200).send("success")
@@ -39,7 +48,7 @@ export const updateToDo = (req, res) => {
     const id = req.body.id
     const name = req.body.textValue
     
-    const sqlUpdate = "UPDATE todo_list SET name=? WHERE id=?"
+    const sqlUpdate = "UPDATE todo.todo_list SET name=? WHERE id=?"
     db.query(sqlUpdate, [name, id],(err, result) => {
         if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
         else res.status(200).send("success")

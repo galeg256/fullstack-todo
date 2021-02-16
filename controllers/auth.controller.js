@@ -36,7 +36,7 @@ export const login = async (req,res) => {
                     }, config.jwt, {expiresIn: 60*60})
                     res.json({
                         msg: "Вход в систему выполнен",
-                        token: token
+                        token: `Bearer ${token}`
                     })
                 }
                 else res.status(404).send("Ошибка авторизации")
@@ -66,21 +66,31 @@ export const register = async (req,res) => {
                 db.query(sqlInsert, [login, hashPassword], (err, result) => {
                     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
                     else { 
-                        sqlSelect = "Select * from user where userLogin=?"
-                        db.query(sqlSelect, login, (err, result) => {
-                            if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
-                            else {
-                                const data = result[0]
-                                const token = jwt.sign({
-                                    email: data.userLogin,
-                                    userId: data.userId
-                                }, config.jwt, {expiresIn: 60*60})
-                                res.json({
-                                    msg: "Вход в систему выполнен",
-                                    token: token
-                                })
-                             }   
+                        console.log(result)
+                        const userId = result.insertId
+                        const token = jwt.sign({
+                            email: login,
+                            userId: userId
+                        }, config.jwt, {expiresIn: 60*60})
+                        res.json({
+                            msg: "Вход в систему выполнен",
+                            token: `Bearer ${token}`
                         })
+                        // sqlSelect = "Select * from user where userLogin=?"
+                        // db.query(sqlSelect, login, (err, result) => {
+                        //     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
+                        //     else {
+                        //         const data = result[0]
+                        //         const token = jwt.sign({
+                        //             email: data.userLogin,
+                        //             userId: data.userId
+                        //         }, config.jwt, {expiresIn: 60*60})
+                        //         res.json({
+                        //             msg: "Вход в систему выполнен",
+                        //             token: token
+                        //         })
+                        //      }   
+                        // })
                     }   
                 })
             }
