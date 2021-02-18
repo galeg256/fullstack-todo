@@ -25,7 +25,7 @@ export const login = async (req,res) => {
         db.query(sqlSelect, login, async (err, result) => {
             if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
             if (result.length == 0) {
-                return res.status(404).json({msg: "Ошибка авторизации"})
+                return res.status(404).send({msg: "Ошибка авторизации"})
             } else {
                 const data = result[0]
                 const isMatch = await bcrypt.compare(password, data.userPassword)
@@ -39,7 +39,7 @@ export const login = async (req,res) => {
                         token: `Bearer ${token}`
                     })
                 }
-                else res.status(404).send("Ошибка авторизации")
+                else res.status(404).send({msg:"Ошибка авторизации"})
             }
         })   
     }   
@@ -66,7 +66,7 @@ export const register = async (req,res) => {
                 db.query(sqlInsert, [login, hashPassword], (err, result) => {
                     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
                     else { 
-                        console.log(result)
+                        //console.log(result)
                         const userId = result.insertId
                         const token = jwt.sign({
                             email: login,

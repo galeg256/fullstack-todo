@@ -22,7 +22,7 @@ export const createToDo = async (req, res) => {
     db.query(sqlInsert, [name, userId], (err, result) => {
         if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
         else {           
-            res.status(200).send(result.insertId.toString())
+            res.status(200).json({id: result.insertId.toString()})
 
             // const sqlSelect = "Select max(id) as id from todo.todo_list;"
             // db.query(sqlSelect, (err, result) => {

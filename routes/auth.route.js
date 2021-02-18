@@ -7,7 +7,7 @@ const router = Router()
 router.get("/", users)
 router.post("/login", [
     check('login','Некорректный e-mail').isEmail(),
-    check('password', "Введите пароль").exists()
+    check('password', "Введите пароль").notEmpty()
 ], login)
 router.post("/register", [
     check('login','Некорректный e-mail').isEmail(),

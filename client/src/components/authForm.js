@@ -47,6 +47,7 @@ export default class AuthForm extends React.Component {
       if (res.status === 404)
         alert(result.msg)
       else {   
+        console.log(result.errors)
         let errLogin = ''
         let errPass = ''
         for (let err of result.errors) {

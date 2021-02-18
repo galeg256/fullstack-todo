@@ -26,7 +26,7 @@ export default class ToDo extends React.Component {
     // }
 
     async fetchToDo() {
-      console.log('fetch')
+      //console.log(localStorage.getItem('token'))
       const res = await fetch('/api', { 
           headers: {
             'Content-Type':'application/json',
@@ -34,9 +34,9 @@ export default class ToDo extends React.Component {
           },
         }
       )
-      const result = res.json()
       if (res.ok) {
         //take data
+        const result = await res.json()
         this.setState( () => {
           for (let item of result) {
             item.id = item.id.toString()
@@ -47,10 +47,10 @@ export default class ToDo extends React.Component {
           }
         })
       } else {
-        if (res.status === 401) {
+        if (res.status == 401) {
           this.props.changeForm('AuthForm')
         } else {
-          console.log(result.msg)
+          console.log(res.statusText)
         }
       }
     }
@@ -86,57 +86,64 @@ export default class ToDo extends React.Component {
         }
       }
     }
-  
-    addTodo(newTodoText) {
-      // this.state.todos.unshift({id: '1', text: newTodoText})
-      // console.log(this.state.todos)
-      // this.setState({todos: this.state.todos})
-      console.log({"name": newTodoText})
-      
-      fetch('/api/', {
+    
+    async addTodo(newTodoText) {      
+      const res = await fetch('/api', { 
         method: "post",
         headers: {
           'Content-Type':'application/json',
           'Authorization': localStorage.getItem('token')
         },
         body: JSON.stringify({"name": newTodoText})
-      })
-      .then(res => res.json())
-      .then(result => {
+        }
+      )
+      if (res.ok) {
+        //take data
+        const result = await res.json()
         this.setState(state => {
           const cloneTodos = Object.assign([], state.todos) //клонирование массива
-          if (cloneTodos.length != 0) cloneTodos.unshift({id: result[0].id.toString(), text: newTodoText})
-          else cloneTodos.unshift({id: result[0].id.toString(), text: newTodoText})
+          if (cloneTodos.length != 0) cloneTodos.unshift({id: result.id.toString(), text: newTodoText})
+          else cloneTodos.unshift({id: result.id.toString(), text: newTodoText})
           return {todos: cloneTodos}
         })
-      })
+      } else {
+        if (res.status == 401) {
+          this.props.changeForm('AuthForm')
+        } else {
+          console.log(res.statusText)
+        }
+      }
     }
   
-    delTodo(delID) {
-      fetch(`/api/delete/${delID}`, {
+    async delTodo(delID) {
+      const res = await fetch(`/api/delete/${delID}`, {
         method: "delete",
         headers: {
           'Content-Type':'application/json',
           'Authorization': localStorage.getItem('token')
         },
       })
-      //.then(response => response.json())
-      .then(result => {
-        console.log(result)
-        if (result.status==200) {
-          this.setState( state => {
+
+      if (res.ok) {
+        //take data
+        this.setState( state => {
           const pos = state.todos.findIndex( value => value.id === delID)
           const cloneTodos = Object.assign([], state.todos)
           cloneTodos.splice(pos, 1)
           return {todos: cloneTodos}
-          })
-        } else console.log("error delete")
-      })
+        })
+      } else {
+        if (res.status == 401) {
+          this.props.changeForm('AuthForm')
+        } else {
+          console.log(res.statusText)
+        }
+      }
     }
+
   
-    saveToDo(todo) {
-      console.log(todo)
-      fetch('/api/update', {
+    async saveToDo(todo) {
+      const res = await fetch('/api/update', {
         method: "put",
         headers: {
           'Content-Type':'application/json',
@@ -144,10 +151,10 @@ export default class ToDo extends React.Component {
         },
         body: JSON.stringify(todo)
       })
-      //.then(res => res.json())
-      .then(result => {    
-        if (result.status == 200) {
-          let pos
+
+      if (res.ok) {
+        //take data
+        let pos
           for (let i=0; i<this.state.todos.length; i++) {
             if (this.state.todos[i].id === todo.id) pos = i
           }
@@ -157,8 +164,14 @@ export default class ToDo extends React.Component {
             cloneTodos.splice(pos, 1, {id: todo.id, text: todo.textValue})
             return {todos: cloneTodos}
           })
+      } else {
+        if (res.status == 401) {
+          this.props.changeForm('AuthForm')
+        } else {
+          console.log(res.statusText)
         }
-      })
+      }
+
     }
   
     render() {
