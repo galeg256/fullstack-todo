@@ -47,7 +47,7 @@ export default class RegisterForm extends React.Component {
 
   async fetchRegistration() {
     const state = this.state
-    const res = await fetch('http://localhost:5000/api/auth/register', {
+    const res = await fetch('/api/auth/register', {
       method: "post",
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify({"login": state.logValue, "password": state.pasValue})

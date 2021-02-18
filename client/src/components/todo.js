@@ -19,7 +19,7 @@ export default class ToDo extends React.Component {
   
     componentDidMount() {
       console.log("mount")
-      fetch('http://localhost:5000/api')
+      fetch('/api')
         .then(response => response.json())
         //.then(result => {this.setState({todos: result} ) })
         .then(result => {this.setState(state => {
@@ -55,7 +55,7 @@ export default class ToDo extends React.Component {
       // this.setState({todos: this.state.todos})
       console.log({"name": newTodoText})
       
-      fetch('http://localhost:5000/api/', {
+      fetch('/api/', {
         method: "post",
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({"name": newTodoText})
@@ -72,7 +72,7 @@ export default class ToDo extends React.Component {
     }
   
     delTodo(delID) {
-      fetch(`http://localhost:5000/api/delete/${delID}`, {
+      fetch(`/api/delete/${delID}`, {
         method: "delete"
       })
       //.then(response => response.json())
@@ -91,7 +91,7 @@ export default class ToDo extends React.Component {
   
     saveToDo(todo) {
       console.log(todo)
-      fetch('http://localhost:5000/api/update', {
+      fetch('/api/update', {
         method: "put",
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(todo)
