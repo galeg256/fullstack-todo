@@ -8,7 +8,7 @@ export default class AuthForm extends React.Component {
       pasValue: '',
       
       logErrMes: '',
-      pasErrMes: ''
+      pasErrMes: '',
     }
 
     this.handleLogInput = this.handleLogInput.bind(this)
@@ -39,6 +39,7 @@ export default class AuthForm extends React.Component {
     const result = await res.json()
     if (res.ok) {
       alert("Успешный вход!")
+      localStorage.setItem('token', result.token)
       //сохраняем токен в сессию
       //открываем todo
       this.props.changeForm('ToDo')

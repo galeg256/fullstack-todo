@@ -9,8 +9,9 @@ export default class App extends React.Component {
     this.state = {
       isLogged: false,
       //AuthForm - стартовая форма
-      formType: 'AuthForm' //отвечает за отображаемую форму
+      // formType: 'AuthForm', //отвечает за отображаемую форму
       // formType: 'RegisterForm'
+      formType: 'ToDo'
     }
 
     this.changeForm = this.changeForm.bind(this)
@@ -26,16 +27,13 @@ export default class App extends React.Component {
       case 'RegisterForm': return <RegisterForm changeForm={this.changeForm}/>
       //ToDo не имеет право выбора формы, но позднее необходимо будет это реализовать, 
       //т.к. пользователь должен иметь возможность смены аккаунта из рабочей области
-      case 'ToDo': return <ToDo /> 
+      case 'ToDo': return <ToDo changeForm={this.changeForm}/> 
     }
   }
 
   render() {
-    // const state = this.state
-
-    // const form = state.isLogged ? <ToDo />
-    //   : state.isReg ? <RegisterForm />
-    //   : <AuthForm />
+    // const token = localStorage.getItem('token')
+    // if (!token) this.setState('') 
     const form = this.selectForm()
 
     return <div className='wrapper'>

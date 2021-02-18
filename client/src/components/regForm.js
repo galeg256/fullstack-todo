@@ -55,6 +55,7 @@ export default class RegisterForm extends React.Component {
     const result = await res.json()
     if (res.ok) {
       alert("Успешная регистрация!")
+      localStorage.setItem('token', result.token)
       //сохраняем токен в сессию
       //открываем todo
       this.props.changeForm('ToDo')

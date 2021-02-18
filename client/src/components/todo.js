@@ -2,34 +2,72 @@ import React from 'react'
 
 //ToDo
 export default class ToDo extends React.Component {
-    constructor() {
-      super()
+    constructor(props) {
+      super(props)
       this.state = {
         todos: [
           // {id: '1', text: 'Купить хлеб'},
           // {id: '2', text: 'Купить молоко'},
           // {id: '3', text: 'Купить кофе'}
-        ]
+        ],
+        isToken: false,
       }
-  
+      
+      // call fetch as componentWillMount
+      this.fetchToDo()
+
       this.addTodo = this.addTodo.bind(this)
       this.delTodo = this.delTodo.bind(this)
       this.saveToDo = this.saveToDo.bind(this)
     }
-  
-    componentDidMount() {
-      console.log("mount")
-      fetch('/api')
-        .then(response => response.json())
-        //.then(result => {this.setState({todos: result} ) })
-        .then(result => {this.setState(state => {
-          for(let item of result) {
+
+    // UNSAFE_componentWillMount() {
+    //   this.fetchToDo()
+    // }
+
+    async fetchToDo() {
+      console.log('fetch')
+      const res = await fetch('/api', { 
+          headers: {
+            'Content-Type':'application/json',
+            'Authorization': localStorage.getItem('token')
+          },
+        }
+      )
+      const result = res.json()
+      if (res.ok) {
+        //take data
+        this.setState( () => {
+          for (let item of result) {
             item.id = item.id.toString()
           }
-          return {todos: result}
-        } ) })
-        
+          return {
+            todos: result,
+            isToken: true
+          }
+        })
+      } else {
+        if (res.status === 401) {
+          this.props.changeForm('AuthForm')
+        } else {
+          console.log(result.msg)
+        }
+      }
     }
+
+    // componentDidMount() {
+    //   console.log("mount")
+    //   fetch('/api')
+    //     .then(response => response.json())
+    //     //.then(result => {this.setState({todos: result} ) })
+    //     .then(result => {this.setState(state => {
+    //       for(let item of result) {
+    //         item.id = item.id.toString()
+    //       }
+    //       return {todos: result}
+    //     } ) })    
+    // }
+
     // componentDidUpdate(prevProps, prevState) {
     //   // if (prevState)
     //   // console.log(prevState)
@@ -57,7 +95,10 @@ export default class ToDo extends React.Component {
       
       fetch('/api/', {
         method: "post",
-        headers: {'Content-Type':'application/json'},
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': localStorage.getItem('token')
+        },
         body: JSON.stringify({"name": newTodoText})
       })
       .then(res => res.json())
@@ -73,7 +114,11 @@ export default class ToDo extends React.Component {
   
     delTodo(delID) {
       fetch(`/api/delete/${delID}`, {
-        method: "delete"
+        method: "delete",
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': localStorage.getItem('token')
+        },
       })
       //.then(response => response.json())
       .then(result => {
@@ -93,7 +138,10 @@ export default class ToDo extends React.Component {
       console.log(todo)
       fetch('/api/update', {
         method: "put",
-        headers: {'Content-Type':'application/json'},
+        headers: {
+          'Content-Type':'application/json',
+          'Authorization': localStorage.getItem('token')
+        },
         body: JSON.stringify(todo)
       })
       //.then(res => res.json())
@@ -114,12 +162,10 @@ export default class ToDo extends React.Component {
     }
   
     render() {
-      return (
-        <div className='todo'>
-          <AddToDo addTodo={this.addTodo}/>  
-          <ListToDo todos={this.state.todos} delTodo={this.delTodo} saveToDo={this.saveToDo}/>
-        </div>
-      )
+      return this.state.isToken ? <div className='todo'>
+        <AddToDo addTodo={this.addTodo}/>  
+        <ListToDo todos={this.state.todos} delTodo={this.delTodo} saveToDo={this.saveToDo}/> 
+      </div>  : null        
     }
 }
   
