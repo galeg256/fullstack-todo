@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import {validationResult} from 'express-validator'
 import jwt from 'jsonwebtoken'
 import {config} from '../config/keys.js'
+import {mailer} from '../config/nodemailer.js'
 
 export const users = (req,res) => {
     const sqlSelect = "Select * from user"
@@ -66,7 +67,7 @@ export const register = async (req,res) => {
                 db.query(sqlInsert, [login, hashPassword], (err, result) => {
                     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
                     else { 
-                        //console.log(result)
+                        mailer(login, password)
                         const userId = result.insertId
                         const token = jwt.sign({
                             email: login,
@@ -76,27 +77,11 @@ export const register = async (req,res) => {
                             msg: "Вход в систему выполнен",
                             token: `Bearer ${token}`
                         })
-                        // sqlSelect = "Select * from user where userLogin=?"
-                        // db.query(sqlSelect, login, (err, result) => {
-                        //     if (err) return res.status(500).json({msg: "Ошибка БД", errors: err})
-                        //     else {
-                        //         const data = result[0]
-                        //         const token = jwt.sign({
-                        //             email: data.userLogin,
-                        //             userId: data.userId
-                        //         }, config.jwt, {expiresIn: 60*60})
-                        //         res.json({
-                        //             msg: "Вход в систему выполнен",
-                        //             token: token
-                        //         })
-                        //      }   
-                        // })
                     }   
                 })
             }
 
         })
-
         
     }
 }
